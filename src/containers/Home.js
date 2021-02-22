@@ -44,15 +44,17 @@ export default function Home() {
             <span className="ml-2 font-weight-bold">Create a new note</span>
           </ListGroup.Item>
         </LinkContainer>
-        {notes.map(({ noteId, interviewee, content, createdAt }) => (
+        {notes.map(({ noteId, interviewee, content, createdAt, updatedAt }) => (
           <LinkContainer key={noteId} to={`/notes/${noteId}`}>
             <ListGroup.Item action>
               <span className="font-weight-bold">
-                {interviewee + ' : ' + content.trim().split("\n")[0]}
+                {interviewee + ' : ' + content.trim().split("\n")[0].substring(0, 60)}
+                {content.length >60 ? ' ...' : ""}
               </span>
               <br />
               <span className="text-muted">
-                Created: {new Date(createdAt).toLocaleString()}
+                {"Created: " + new Date(createdAt).toLocaleString()}
+                {updatedAt ? " / Updated: " + new Date(updatedAt).toLocaleString() : ""}
               </span>
             </ListGroup.Item>
           </LinkContainer>
