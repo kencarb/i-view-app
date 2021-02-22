@@ -7,8 +7,12 @@ import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./Notes.css";
 import { s3Upload } from "../libs/awsLib";
+import Select from 'react-select';
+import SkillsPickList from '../components/SkillsPickList.js';
 
 export default function Notes() {
+  const [skills, setSkills] = useState([]);
+  const [interviewee, setInterviewee] = useState("");
   const file = useRef(null);
   const { id } = useParams();
   const history = useHistory();
@@ -25,12 +29,14 @@ export default function Notes() {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
+        const { interviewee, skills, content, attachment } = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
         }
 
+        setInterviewee(interviewee);
+        setSkills(skills);
         setContent(content);
         setNote(note);
       } catch (e) {
@@ -42,7 +48,8 @@ export default function Notes() {
   }, [id]);
 
   function validateForm() {
-    return content.length > 0;
+    //return content.length > 0;
+    return interviewee.length > 0;
   }
 
   function formatFilename(str) {
@@ -79,7 +86,10 @@ export default function Notes() {
         attachment = await s3Upload(file.current);
       }
 
+      console.log(skills);
       await saveNote({
+        interviewee,
+        skills,
         content,
         attachment: attachment || note.attachment
       });
@@ -120,6 +130,21 @@ export default function Notes() {
     <div className="Notes">
       {note && (
         <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="interviewee">
+          <Form.Control
+            value={interviewee}
+            componentClass="input"
+            onChange={e => setInterviewee(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="skills">
+          <Select
+            options={SkillsPickList.options}
+            isMulti
+            defaultValue={skills}
+            onChange={(opt, meta) => setSkills(opt)}
+          />
+        </Form.Group>
           <Form.Group controlId="content">
             <Form.Control
               as="textarea"

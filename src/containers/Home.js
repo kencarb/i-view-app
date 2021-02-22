@@ -44,11 +44,11 @@ export default function Home() {
             <span className="ml-2 font-weight-bold">Create a new note</span>
           </ListGroup.Item>
         </LinkContainer>
-        {notes.map(({ noteId, content, createdAt }) => (
+        {notes.map(({ noteId, interviewee, content, createdAt }) => (
           <LinkContainer key={noteId} to={`/notes/${noteId}`}>
             <ListGroup.Item action>
               <span className="font-weight-bold">
-                {content.trim().split("\n")[0]}
+                {interviewee + ' : ' + content.trim().split("\n")[0]}
               </span>
               <br />
               <span className="text-muted">

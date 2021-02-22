@@ -7,15 +7,20 @@ import config from "../config";
 import "./NewNote.css";
 import { API } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
+import Select from 'react-select';
+import SkillsPickList from '../components/SkillsPickList.js';
 
 export default function NewNote() {
   const file = useRef(null);
   const history = useHistory();
+  const [skills, setSkills] = useState([]);
+  const [interviewee, setInterviewee] = useState("");
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
-    return content.length > 0;
+    //return content.length > 0;
+    return interviewee.length > 0;
   }
 
   function handleFileChange(event) {
@@ -37,7 +42,7 @@ export default function NewNote() {
 
     try {
       const attachment = file.current ? await s3Upload(file.current) : null;
-      await createNote({ content });
+      await createNote({ interviewee, skills, content, attachment });
       history.push("/");
     } catch (e) {
       onError(e);
@@ -54,6 +59,20 @@ export default function NewNote() {
   return (
     <div className="NewNote">
       <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="interviewee">
+          <Form.Control
+            value={interviewee}
+            componentClass="input"
+            onChange={e => setInterviewee(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="skills">
+          <Select
+            options={SkillsPickList.options}
+            isMulti
+            onChange={(opt, meta) => setSkills(opt)}
+          />
+        </Form.Group>
         <Form.Group controlId="content">
           <Form.Control
             value={content}
