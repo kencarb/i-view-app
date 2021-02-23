@@ -16,7 +16,8 @@ Based on: https://serverless-stack.com
 ### deployment:
 - using https://aws.amazon.com/cloud9/ is practically a no brainer
 - steps...
-  - clone this repo
+  - assumes __i-view-service__ is deployed
+  - clone this repo in `environment` path
   - `cd i-view-app`
   - edit and save this file: notes-client/src/config.js
   - ...with values from output of __i-view-service__
